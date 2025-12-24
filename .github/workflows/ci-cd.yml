@@ -52,10 +52,8 @@ jobs:
           port: 2222
           script: |
             docker pull ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:latest
-            # остановить и удалить старый контейнер, если есть
             if [ "$(docker ps -q -f name=app_container)" ]; then
               docker stop app_container
               docker rm app_container
             fi
-            # запустить новый контейнер (подставь нужные порты и переменные)
             docker run -d --name app_container --restart unless-stopped -p 8000:8000 ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:latest
