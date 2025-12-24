@@ -1,7 +1,9 @@
-from fastapi import FastAPI
+from fastapi.testclient import TestClient
+from app.main import app
 
-app = FastAPI()
+client = TestClient(app)
 
-@app.get("/")
-def root():
-    return {"message": "Hello from CI/CD!"}
+def test_root():
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json() == {"message": "Hello from CI/CD!"}
