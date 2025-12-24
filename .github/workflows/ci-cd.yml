@@ -28,6 +28,9 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Run tests
+        run: pytest
 
       - name: Build and push image
         uses: docker/build-push-action@v4
@@ -36,27 +39,8 @@ jobs:
           push: true
           tags: ghcr.io/oberist/ci-cd:latest
 
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait for image to be available
-        run: sleep 5
+      
 
-      - name: Deploy to VM via SSH
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: 2222
-          script: |
-            docker pull ghcr.io/oberist/ci-cd:latest
-            if [ "$(docker ps -q -f name=app_container)" ]; then
-              docker stop app_container
-              docker rm app_container
-            fi
-            docker run -d --name app_container --restart unless-stopped -p 8000:8000 ghcr.io/oberist/ci-cd:latest
 
             
 
