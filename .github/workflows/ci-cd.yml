@@ -57,3 +57,5 @@ jobs:
               docker rm app_container
             fi
             docker run -d --name app_container --restart unless-stopped -p 8000:8000 ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ github.repository }}:latest
+
+            
